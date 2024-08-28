@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Toaster } from '@/components/ui/toaster';
 import NavBar from '@/components/core/nav-bar.tsx';
 import HomePage from '@/news/pages/HomePage.tsx';
 import Settings from '@/news/pages/Settings.tsx';
@@ -8,6 +9,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white">
       <Router>
+        <Toaster />
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />

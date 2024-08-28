@@ -1,6 +1,6 @@
-import { Button } from '../../@/components/ui/button'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
+import { Button } from '@/components/ui';
 
 const meta = {
   title: 'Example/Button',
@@ -11,11 +11,11 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {},
   args: { onClick: fn() },
-} satisfies Meta<typeof Button>
-export default meta
-type Story = StoryObj<typeof meta>
+} satisfies Meta<typeof Button>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     children: 'Button',
   },
-}
+};

@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { usePreferences, Preferences } from '../hooks/usePreferences';
-import { Checkbox, Button } from '@/components/ui';
+import { usePreferences } from '../hooks/usePreferences';
+import { Button } from '@/components/ui';
+import { CategoryEnum, SourceEnum } from '@/news/types/news-service.type.ts';
+import { MultiSelect } from '@/components/ui/multi-select';
+import { useToast } from '@/components/ui/use-toast.ts';
 
-const sources = ['NewsAPI', 'The Guardian', 'New York Times'];
-const categories = ['Technology', 'Sports', 'Politics', 'Entertainment'];
+const sources = Object.values(SourceEnum);
+const categories = Object.values(CategoryEnum);
 const authors = ['Author 1', 'Author 2', 'Author 3']; // This can be dynamically fetched
 
 const Settings: React.FC = () => {
   const { preferences, updatePreferences } = usePreferences();
+  const { toast } = useToast();
   const [selectedSources, setSelectedSources] = useState(preferences.sources);
   const [selectedCategories, setSelectedCategories] = useState(
     preferences.categories
@@ -20,81 +24,63 @@ const Settings: React.FC = () => {
       categories: selectedCategories,
       authors: selectedAuthors,
     });
-  };
-
-  const toggleSelection = (
-    item: string,
-    selectedItems: string[],
-    setSelectedItems: React.Dispatch<React.SetStateAction<string[]>>
-  ) => {
-    if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter((i) => i !== item));
-    } else {
-      setSelectedItems([...selectedItems, item]);
-    }
+    toast({
+      title: 'Success',
+      description: 'Preferences saved successfully',
+    });
   };
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Customize Your News Feed</h2>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Select Sources</h3>
-        <div className="flex flex-col items-center gap-2">
-          {sources.map((source) => (
-            <React.Fragment key={source}>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={selectedSources.includes(source)}
-                  onCheckedChange={() =>
-                    toggleSelection(source, selectedSources, setSelectedSources)
-                  }
-                />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {source}
-                </label>
-              </div>
-            </React.Fragment>
-          ))}
+      <div className="flex justify-center mb-4 gap-2">
+        <h3 className="text-lg font-semibold w-1/2">Select Sources: </h3>
+        <div className="flex flex-wrap gap-2 w-1/2">
+          <div className="sm:w-full md:w-full">
+            <MultiSelect
+              options={sources?.map((source) => ({
+                value: source,
+                label: source,
+              }))}
+              onValueChange={setSelectedSources}
+              defaultValue={selectedSources}
+              placeholder="Select Source"
+              variant="inverted"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Select Categories</h3>
-        <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <Checkbox
-              key={category}
-              checked={selectedCategories.includes(category)}
-              onChange={() =>
-                toggleSelection(
-                  category,
-                  selectedCategories,
-                  setSelectedCategories
-                )
-              }
-              label={category}
-            />
-          ))}
+      <div className="flex justify-center mb-4 gap-2">
+        <h3 className="text-lg font-semibold w-1/2">Select Categories: </h3>
+        <div className="flex flex-wrap gap-2 w-1/2">
+          <MultiSelect
+            options={categories?.map((category) => ({
+              value: category,
+              label: category,
+            }))}
+            onValueChange={setSelectedCategories}
+            defaultValue={selectedCategories}
+            placeholder="Select Category"
+            variant="inverted"
+          />
         </div>
       </div>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Select Authors</h3>
-        <div className="flex flex-wrap gap-2">
-          {authors.map((author) => (
-            <Checkbox
-              key={author}
-              checked={selectedAuthors.includes(author)}
-              onChange={() =>
-                toggleSelection(author, selectedAuthors, setSelectedAuthors)
-              }
-              label={author}
-            />
-          ))}
+      <div className="flex justify-center mb-4 gap-2">
+        <h3 className="text-lg font-semibold w-1/2">Select Authors: </h3>
+        <div className="flex flex-wrap gap-2 w-1/2">
+          <MultiSelect
+            options={authors?.map((author) => ({
+              value: author,
+              label: author,
+            }))}
+            onValueChange={setSelectedAuthors}
+            defaultValue={selectedAuthors}
+            placeholder="Select Author"
+            variant="inverted"
+          />
         </div>
       </div>
 

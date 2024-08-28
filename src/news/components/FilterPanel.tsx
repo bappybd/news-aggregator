@@ -7,9 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input.tsx';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
+import { MultiSelect } from '@/components/ui/multi-select';
 import {
   Popover,
   PopoverContent,
@@ -17,44 +17,70 @@ import {
 } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
-import { SourceEnum } from '@/news/types/news-service.type.ts';
+import { FilterSearch, SourceEnum } from '@/news/types/news-service.type.ts';
+import { usePreferences } from '@/news/hooks/usePreferences.ts';
 
 interface FiltersProps {
+  filter: FilterSearch;
   onFilter: (
-    source: SourceEnum,
+    source: SourceEnum[],
     date: Date | undefined,
     category: string | undefined
   ) => void;
 }
 
-const FiltersPanel: React.FC<FiltersProps> = ({ onFilter }) => {
-  const [source, setSource] = useState<SourceEnum>(SourceEnum.NewsAPI);
-  const [date, setDate] = useState<Date | undefined>();
-  const [category, setCategory] = useState<string | undefined>();
+const FiltersPanel: React.FC<FiltersProps> = ({ filter, onFilter }) => {
+  const { preferences } = usePreferences();
+
+  const [userSources] = useState(
+    preferences?.sources?.map((userSource) => ({
+      value: userSource,
+      label: userSource,
+    })) || []
+  );
+  const [userCategories] = useState(
+    preferences?.categories?.map((userCategory) => ({
+      value: userCategory,
+      label: userCategory,
+    })) || []
+  );
+
+  const [selectedSource, setSelectedSource] = useState<string[]>(
+    filter.source as string[]
+  );
+  const [date, setDate] = useState<Date | undefined>(filter.date);
+  const [category, setCategory] = useState<string | undefined>(filter.category);
 
   const handleFilter = () => {
-    onFilter(source, date, category);
+    onFilter(selectedSource as SourceEnum[], date, category);
   };
+
+  /*const clearAllFilter = () => {
+    setSelectedSource([]);
+    setDate(undefined);
+    setCategory(undefined);
+
+    handleFilter();
+  };*/
 
   return (
     <div className="flex flex-col md:flex-row p-4 gap-2 w-full">
-      <Select onValueChange={(e: SourceEnum) => setSource(e)}>
-        <SelectTrigger className="w-1/4">
-          <SelectValue placeholder="Source" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={SourceEnum.NewsAPI}>NewsAPI</SelectItem>
-          <SelectItem value={SourceEnum.Guardian}>The Guardian</SelectItem>
-          <SelectItem value={SourceEnum.NYT}>New York Times</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="sm:w-full md:w-full">
+        <MultiSelect
+          options={userSources}
+          onValueChange={setSelectedSource}
+          defaultValue={selectedSource}
+          placeholder="Select Source"
+          variant="inverted"
+        />
+      </div>
 
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant={'outline'}
             className={cn(
-              'w-1/4 justify-start text-left font-normal',
+              'w-full justify-start text-left font-normal',
               !date && 'text-muted-foreground'
             )}
           >
@@ -72,15 +98,30 @@ const FiltersPanel: React.FC<FiltersProps> = ({ onFilter }) => {
         </PopoverContent>
       </Popover>
 
-      <div className={'flex basis-1/4'}>
-        <Input
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          placeholder="Category"
-        />
+      <div className={'flex sm:w-full md:w-full'}>
+        <Select
+          value={category?.toString()}
+          onValueChange={(e: SourceEnum) => setCategory(e)}
+        >
+          <SelectTrigger className="sm:w-full md:w-full">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {userCategories.map((category) => (
+              <React.Fragment key={category.value}>
+                <SelectItem value={category.value}>
+                  <span className={'capitalize'}>{category.label}</span>
+                </SelectItem>
+              </React.Fragment>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-      <div className={'flex justify-end w-1/4'}>
+      <div className={'flex justify-center gap-2'}>
         <Button onClick={handleFilter}>Apply Filters</Button>
+        {/*<Button variant={'secondary'} onClick={clearAllFilter}>
+          Reset
+        </Button>*/}
       </div>
     </div>
   );

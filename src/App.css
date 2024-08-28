@@ -30,9 +30,12 @@
   /*Border radius for card, input and buttons*/
   --radius: 0.5rem;
 
+  /* --foreground */
+  --foreground: 240 3.8% 46.1%;
+
   /* Muted backgrounds such as <TabsList />, <Skeleton /> and <Switch /> */
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
 
   /* Background color for <Card /> */
   --card: 0 0% 100%;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CategoryEnum, SourceEnum } from '@/news/types/news-service.type.ts';
 
 export interface Preferences {
   sources: string[];
@@ -7,8 +8,8 @@ export interface Preferences {
 }
 
 const defaultPreferences: Preferences = {
-  sources: ['NewsAPI'],
-  categories: [],
+  sources: Object.values(SourceEnum),
+  categories: Object.values(CategoryEnum),
   authors: [],
 };
 

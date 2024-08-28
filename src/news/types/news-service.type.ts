@@ -6,12 +6,22 @@ export enum SourceEnum {
   NYT = 'NYT',
 }
 
+export enum CategoryEnum {
+  Business = 'business',
+  Entertainment = 'entertainment',
+  General = 'general',
+  Health = 'health',
+  Science = 'science',
+  Sports = 'sports',
+  Technology = 'technology',
+}
+
 export type FilterSearch = {
   page: number;
   keyword?: string;
   date?: Date | undefined;
   category?: string;
-  source?: SourceEnum;
+  source?: SourceEnum[];
 };
 
 export type ArticleNewsAPI = {

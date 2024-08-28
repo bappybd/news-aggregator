@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button.tsx';
 import { Input } from '@/components/ui/input.tsx';
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  q: string;
+  onSearch: (q: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [query, setQuery] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({ q, onSearch }) => {
+  const [query, setQuery] = useState(q);
 
   const handleSearch = () => {
     onSearch(query);
